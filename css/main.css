@@ -1,0 +1,574 @@
+/*! HTML5 Boilerplate v5.3.0 | MIT License | https://html5boilerplate.com/ */
+
+/*
+ * What follows is the result of much research on cross-browser styling.
+ * Credit left inline and big thanks to Nicolas Gallagher, Jonathan Neal,
+ * Kroc Camen, and the H5BP dev community and team.
+ */
+
+/* ==========================================================================
+   Base styles: opinionated defaults
+   ========================================================================== */
+
+html {
+    color: #222;
+    font-size: 1em;
+    line-height: 1.4;
+}
+
+/*
+ * Remove text-shadow in selection highlight:
+ * https://twitter.com/miketaylr/status/12228805301
+ *
+ * These selection rule sets have to be separate.
+ * Customize the background color to match your design.
+ */
+
+::-moz-selection {
+    background: #b3d4fc;
+    text-shadow: none;
+}
+
+::selection {
+    background: #b3d4fc;
+    text-shadow: none;
+}
+
+/*
+ * A better looking default horizontal rule
+ */
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 1em 0;
+    padding: 0;
+}
+
+/*
+ * Remove the gap between audio, canvas, iframes,
+ * images, videos and the bottom of their containers:
+ * https://github.com/h5bp/html5-boilerplate/issues/440
+ */
+
+audio,
+canvas,
+iframe,
+img,
+svg,
+video {
+    vertical-align: middle;
+}
+
+/*
+ * Remove default fieldset styles.
+ */
+
+fieldset {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+/*
+ * Allow only vertical resizing of textareas.
+ */
+
+textarea {
+    resize: vertical;
+}
+
+/* ==========================================================================
+   Browser Upgrade Prompt
+   ========================================================================== */
+
+.browserupgrade {
+    margin: 0.2em 0;
+    background: #ccc;
+    color: #000;
+    padding: 0.2em 0;
+}
+
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+
+
+
+
+/* ==========================================================================
+   Helper classes
+   ========================================================================== */
+
+/* Hide tickers for number inputs */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/*
+ * Hide visually and from screen readers
+ */
+
+.hidden {
+    display: none !important;
+}
+
+/*
+ * Hide only visually, but have it available for screen readers:
+ * http://snook.ca/archives/html_and_css/hiding-content-for-accessibility
+ */
+
+.visuallyhidden {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+
+/*
+ * Extends the .visuallyhidden class to allow the element
+ * to be focusable when navigated to via the keyboard:
+ * https://www.drupal.org/node/897638
+ */
+
+.visuallyhidden.focusable:active,
+.visuallyhidden.focusable:focus {
+    clip: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    position: static;
+    width: auto;
+}
+
+/*
+ * Hide visually and from screen readers, but maintain layout
+ */
+
+.invisible {
+    visibility: hidden;
+}
+
+/*
+ * Clearfix: contain floats
+ *
+ * For modern browsers
+ * 1. The space content is one way to avoid an Opera bug when the
+ *    `contenteditable` attribute is included anywhere else in the document.
+ *    Otherwise it causes space to appear at the top and bottom of elements
+ *    that receive the `clearfix` class.
+ * 2. The use of `table` rather than `block` is only necessary if using
+ *    `:before` to contain the top-margins of child elements.
+ */
+
+.clearfix:before,
+.clearfix:after {
+    content: " "; /* 1 */
+    display: table; /* 2 */
+}
+
+.clearfix:after {
+    clear: both;
+}
+
+/* ==========================================================================
+   EXAMPLE Media Queries for Responsive Design.
+   These examples override the primary ('mobile first') styles.
+   Modify as content requires.
+   ========================================================================== */
+
+@media only screen and (min-width: 35em) {
+    /* Style adjustments for viewports that meet the condition */
+}
+
+@media print,
+       (-webkit-min-device-pixel-ratio: 1.25),
+       (min-resolution: 1.25dppx),
+       (min-resolution: 120dpi) {
+    /* Style adjustments for high resolution devices */
+}
+
+/* ==========================================================================
+   Print styles.
+   Inlined to avoid the additional HTTP request:
+   http://www.phpied.com/delay-loading-your-print-css/
+   ========================================================================== */
+
+@media print {
+    *,
+    *:before,
+    *:after,
+    *:first-letter,
+    *:first-line {
+        background: transparent !important;
+        color: #000 !important; /* Black prints faster:
+                                   http://www.sanbeiji.com/archives/953 */
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    a,
+    a:visited {
+        text-decoration: underline;
+    }
+
+    a[href]:after {
+        content: " (" attr(href) ")";
+    }
+
+    abbr[title]:after {
+        content: " (" attr(title) ")";
+    }
+
+    /*
+     * Don't show links that are fragment identifiers,
+     * or use the `javascript:` pseudo protocol
+     */
+
+    a[href^="#"]:after,
+    a[href^="javascript:"]:after {
+        content: "";
+    }
+
+    pre,
+    blockquote {
+        border: 1px solid #999;
+        page-break-inside: avoid;
+    }
+
+    /*
+     * Printing Tables:
+     * http://css-discuss.incutio.com/wiki/Printing_Tables
+     */
+
+    thead {
+        display: table-header-group;
+    }
+
+    tr,
+    img {
+        page-break-inside: avoid;
+    }
+
+    img {
+        max-width: 100% !important;
+    }
+
+    p,
+    h2,
+    h3 {
+        orphans: 3;
+        widows: 3;
+    }
+
+    h2,
+    h3 {
+        page-break-after: avoid;
+    }
+}
+
+/* Animation CSS */
+
+.spin {
+    -webkit-animation-name: spin;
+    -webkit-animation-duration: 8000ms;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+    -moz-animation-name: spin;
+    -moz-animation-duration: 8000ms;
+    -moz-animation-iteration-count: infinite;
+    -moz-animation-timing-function: linear;
+    -ms-animation-name: spin;
+    -ms-animation-duration: 8000ms;
+    -ms-animation-iteration-count: infinite;
+    -ms-animation-timing-function: linear;
+
+    animation-name: spin;
+    animation-duration: 6000ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+@-ms-keyframes spin {
+    from { -ms-transform: rotate(0deg); }
+    to { -ms-transform: rotate(359deg); }
+}
+@-moz-keyframes spin {
+    from { -moz-transform: rotate(0deg); }
+    to { -moz-transform: rotate(359deg); }
+}
+@-webkit-keyframes spin {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(359deg); }
+}
+@keyframes spin {
+    from {
+        transform:rotate(0deg);
+    }
+    to {
+        transform:rotate(360deg);
+    }
+}
+
+.spinner-container{
+    position: absolute;
+    width:100%;
+    height:100%;
+    text-align:center;
+    z-index:10000;
+    background:#000;
+}
+
+.spinner{
+    margin: 200px auto 5px auto;
+    width: 270px;
+    height: 231px;
+    background-image: url("../img/splat1.png");
+    font-size: 70px;
+    padding-top: 60px;
+    font-family: 'Lobster', helvetica, arial;
+}
+
+.spinner-container.loaded{
+    /*visibility: hidden;*/
+    /*opacity: 0;*/
+    /*transition: visibility 0s, opacity 0.5s linear;*/
+
+    /*transition: opacity 1s ease-out;*/
+    /*opacity: 0;*/
+    /*height: 0;*/
+    /*overflow: hidden;*/
+
+    /*opacity: 1;*/
+    /*visibility: hidden;*/
+    /*transition-property: opacity, visibility;*/
+    /*transition-duration: 1s, 0s;*/
+    /*transition-delay: 0s, 1s;*/
+}
+
+.spinner-container.loaded .spinner, .spinner-container.loaded .spinner-text{
+    display:none;
+}
+
+
+.answer-incorrect {
+    color:#cc0000 !important;
+    -webkit-animation: kf_shake 1.5s 1 linear;
+    -moz-animation: kf_shake 1.5s 1 linear;
+    -o-animation: kf_shake 1.5s 1 linear;
+}
+@-webkit-keyframes kf_shake {
+    0% { -webkit-transform: translate(60px); }
+    20% { -webkit-transform: translate(-60px); }
+    40% { -webkit-transform: translate(40px); }
+    60% { -webkit-transform: translate(-40px); }
+    80% { -webkit-transform: translate(20px); }
+    100% { -webkit-transform: translate(0px); }
+}
+@-moz-keyframes kf_shake {
+    0% { -moz-transform: translate(60px); }
+    20% { -moz-transform: translate(-60px); }
+    40% { -moz-transform: translate(40px); }
+    60% { -moz-transform: translate(-40px); }
+    80% { -moz-transform: translate(20px); }
+    100% { -moz-transform: translate(0px); }
+}
+@-o-keyframes kf_shake {
+    0% { -o-transform: translate(60px); }
+    20% { -o-transform: translate(-60px); }
+    40% { -o-transform: translate(40px); }
+    60% { -o-transform: translate(-40px); }
+    80% { -o-transform: translate(20px); }
+    100% { -o-origin-transform: translate(0px); }
+}
+
+
+/* ==========================================================================
+   QUIZGAME Helpers
+
+
+   ========================================================================== */
+
+.text-right{
+    text-align:right;
+}
+
+.text-left{
+    text-align:left;
+}
+
+.text-center{
+    text-align:center;
+}
+
+.tooltip-danger .tooltip-inner,
+.tooltip-success .tooltip-inner{
+    padding:8px 15px;
+    font-size:22px;
+}
+
+.tooltip-danger .tooltip-inner{
+    background-color:#c00;
+}
+
+.tooltip-success .tooltip-inner{
+    background-color:#77b300;
+}
+
+.tooltip-danger .tooltip-arrow,
+.tooltip.tooltip-danger.left .tooltip-arrow{
+    color:#C00;
+    border-left-color:#C00;
+}
+
+.tooltip-success .tooltip-arrow,
+.tooltip.tooltip-success.left .tooltip-arrow{
+    color:#77b300;
+    border-left-color:#77b300;
+}
+
+/* ==========================================================================
+   QUIZGAME GLOBAL STYLES
+
+
+   ========================================================================== */
+
+#quizgame .quiz {
+    padding: 20px 0;
+}
+
+#quizgame .quiz form label,
+#quizgame .quiz form .form-control {
+    font-size: 50px;
+    line-height:50px;
+    height:50px;
+    font-weight:normal;
+    margin-top:15px;
+    margin-bottom:15px;
+}
+
+/* ==========================================================================
+   QUIZGAME STYLE Parachuter
+
+
+   ========================================================================== */
+
+#quizgame{
+    position:fixed;
+    height:100%;
+    width:100%;
+    overflow-y:scroll;
+}
+
+/*#quizgame.game-parachuter{*/
+    /*background-color:#fff;*/
+/*}*/
+
+@keyframes animatedBackground {
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: 100% 0;
+    }
+}
+@-webkit-keyframes animatedBackground {
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: 100% 0;
+    }
+}
+@-ms-keyframes animatedBackground {
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: 100% 0;
+    }
+}
+@-moz-keyframes animatedBackground {
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: 100% 0;
+    }
+}
+
+@keyframes rocker {
+    0%   { transform: rotate(0deg); }
+    25% { transform: rotate(30deg); }
+    50% { transform: rotate(-30deg); }
+    100% { transform: rotate(0deg); }
+}
+
+#quizgame.game-parachuter {
+    height:100%;
+    width:100%;
+    background: url(http://addtwitter-followers.com/wp-content/themes/twentyten/images/bck.jpg) top no-repeat #94E3F4;
+    background-position: 0px 0px;
+    background-repeat: repeat-x;
+    animation: animatedBackground 150s linear infinite;
+    -ms-animation: animatedBackground 150s linear infinite;
+    -moz-animation: animatedBackground 150s linear infinite;
+    -webkit-animation: animatedBackground 150s linear infinite;
+}
+
+#quizgame.game-parachuter .game-header {
+    font-family: bloone, monaco;
+    text-shadow: #555555;
+    font-weight: bold;
+    letter-spacing:-9px;
+    padding-left:50px;
+}
+
+#quizgame.game-parachuter .quiz {
+    position:relative;
+    overflow-y:hidden;
+    background-color:#fff;
+    background-color:#efefff;
+    opacity: 0.8;
+    -moz-border-radius: 30px;
+    border-radius: 30px;
+}
+
+#quizgame.game-parachuter .quiz .cloudmask{
+    position:absolute;
+    width:100%;
+    height:5000px;
+    bottom:0;
+    left:0;
+    background:#fff;
+}
+
+#quizgame.game-parachuter .quiz .cloudmask .cloudline{
+    position:absolute;
+    width:100%;
+    height:118px;
+    top:-118px;
+    left:0;
+    background: url(../img/cloudline.png) top no-repeat;
+}
+
+#quizgame.game-parachuter .parachute-man{
+    position:fixed;
+    top:20px;
+    right:20px;
+    width:197px;
+    height:302px;
+    background: url(../img/parachute-man2.png);
+    animation: rocker 30s linear infinite;
+    -ms-animation: rocker 30s linear infinite;
+    -moz-animation: rocker 30s linear infinite;
+    -webkit-animation: rocker 30s linear infinite;
+}
+
