@@ -230,6 +230,10 @@ QuizGame.Views.Question = Backbone.View.extend({
     answered: function() {
         var that = this;
         if(this.model.get("correct")){
+            if(!QuizGame.options.demoMode){
+                QuizGame.Particle.triggerSuccess();
+            }
+
             this.$el.removeClass('answer-incorrect');
             this.$el.addClass('answer-correct');
             this.model.set({expression: this.model.get("expression") + " " + this.model.get("answer")});
@@ -238,18 +242,25 @@ QuizGame.Views.Question = Backbone.View.extend({
             var questionsRight = 2 + this.index;
             var heightOffset = (questionsRight * QuizGame.quizView.questionHeight);
 
+            // Move clouds
             QuizGame.quizView.$cloudmask.animate({
                 top: QuizGame.quizView.cloudOffset + heightOffset + 'px',
             }, 1000);
 
+            // Focus next
             var $nextQuestion = this.$el.next();
             if($nextQuestion.length){
                 $nextQuestion.find('.question-input').focus();
             }
 
+            // Show message
             QuizGame.gameView.showSuccess();
         }
         else{
+            if(!QuizGame.options.demoMode){
+                QuizGame.Particle.triggerFail();
+            }
+
             this.$el.removeClass('answer-correct');
             this.$el.addClass('answer-incorrect');
 
@@ -298,6 +309,73 @@ QuizGame.Views.Quiz = Backbone.View.extend({
 
 });
 
+QuizGame.Views.Login = Backbone.View.extend({
+
+    template: QuizGame.Templates.login,
+
+    events: {
+        "click .btn-submit": "login"
+    },
+
+    initialize: function(options) {
+        this.type = options.type;
+
+        this.el = options.el;
+        this.$el = $(this.el);
+
+        if(options.show){
+            this.render();
+        }
+
+    },
+
+    render: function() {
+        QuizGame.$spinner.hide();
+
+        var template = _.template(this.template, {});
+
+        QuizGame.$mask.show();
+
+        if(!this.$el.length){
+            this.$el = $(".login-container");
+            if(!this.$el.length){
+                console.log("NEW");
+                $("body").append('<div class="login-container well"></div>');
+                this.$el = $(".login-container");
+            }
+        }
+
+        this.$el.html(template);
+
+        this.delegateEvents();
+    },
+
+    login: function(e) {
+        e.preventDefault();
+        var email = this.$el.find(".input-email").val();
+        var password = this.$el.find(".input-password").val();
+
+        QuizGame.Particle.api.login({ username: email, password: password })
+            .then(function(result) {
+
+                var token = result.body.access_token;
+                QuizGame.Utils.createCookie('t', token, 7);
+                //QuizGame.Storage.store('t', token);
+
+                // Store thie index of the device,
+                // todo, add a ui to select the device from a dropdown to store the device index in the cookie
+                QuizGame.Utils.createCookie('d', '5', 7);
+                //QuizGame.Storage.store('d', '5');
+
+                QuizGame.getDeviceID();
+
+            }, function(err) {
+                console.error(err);
+            });
+    },
+});
+
+
 QuizGame.Views.Game = Backbone.View.extend({
 
     events: {
@@ -333,10 +411,37 @@ QuizGame.Views.Game = Backbone.View.extend({
 
         QuizGame.quizView.questionHeight = 95;
 
+
+        //setTimeout(function(){
+        //    var audio = new Audio('sound/joshuaempyre_arcade.wav');
+        //    audio.play();
+        //}, 2000);
+        //
+        //setTimeout(function(){
+        //    QuizGame.$spinner.css("display", "none");
+        //    QuizGame.$mask.addClass('loaded');
+        //    QuizGame.$mask.fadeTo( "slow", 0 );
+        //    QuizGame.$mask.fadeTo( 2000, 0 );
+        //    that.render();
+        //}, 5000);
+        //
+        //setTimeout(function(){
+        //    QuizGame.$mask.css("display", "none");
+        //}, 7000);
+        //
+        //setTimeout(function(){
+        //    QuizGame.quizView.$cloudmask.animate({
+        //        top: QuizGame.quizView.cloudOffset + QuizGame.quizView.questionHeight + 'px',
+        //    }, 800);
+        //}, 5000);
+
+
+        // Testmode
+        QuizGame.$spinner.css("display", "none");
+        QuizGame.$mask.css("display", "none");
         QuizGame.quizView.$cloudmask.animate({
             top: QuizGame.quizView.cloudOffset + QuizGame.quizView.questionHeight + 'px',
-        }, 500);
-
+        }, 800);
     },
 
     showError: function() {
@@ -394,8 +499,10 @@ QuizGame.QuizGameRouter = Backbone.Router.extend({
 
     routes: {
         "back": "back",
+        "login": "login",
         ":game": "init_game",
         "game/:game": "init_game",
+        ":game/subject/:subject": "init_game",
         "level/:level": "load_level",
     },
 
@@ -403,12 +510,30 @@ QuizGame.QuizGameRouter = Backbone.Router.extend({
         Backbone.history.start({pushSate: true});
         //this.options = $.extend({}, this.defaultOptions, options);
 
+        //QuizGame.Particle.getDeviceID();
+
+        // todo, navicate here for demo mode only, otherwise the login should be triggered
         this.navigate(QuizGame.options.game + "/subject/" + QuizGame.options.subject, {trigger: true});
     },
 
 
-    init_game: function (game) {
+    init_game: function (game, subject) {
         console.log("Loading Game: " + game);
+
+        if(!subject){
+            this.navigate(game + "/subject/" + QuizGame.options.subject, {trigger: true});
+        }
+        else{
+            console.log("Loading Subject: " + subject);
+
+            QuizGame.gameView = new QuizGame.Views.Game({el: QuizGame.options.el});
+        }
+    },
+
+    login: function () {
+        console.log("LOGING ROUTE");
+
+        QuizGame.loginView = new QuizGame.Views.Login({show:true});
     },
 
 });

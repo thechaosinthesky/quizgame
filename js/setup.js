@@ -3,36 +3,46 @@ var QuizGame = {
         el: "#quizgame",
         game: "parachuter",
         subject: "math",
-        questionsLength: 8
+        questionsLength: 8,
+        storagePrefix: "QUIZGAME_",
+        demoMode: false
     },
 
+    Particle: {},
     Templates: {},
     Models: {},
     Views: {},
+    Utils: {},
+    Storage: {},
 
     init: function(options){
         this.options = $.extend({}, this.defaultOptions, options);
 
+        this.$mask = $('.spinner-mask');
+        this.$spinner = $('.spinner-container');
+
         this.router = new QuizGame.QuizGameRouter();
-        this.gameView = new QuizGame.Views.Game({el: QuizGame.options.el});
+    },
 
+    showMask: function(){
+        this.$spinner.removeClass('loaded');
+        this.$mask.show();
+        this.$spinner.show();
+    },
 
+    hideMask: function(){
+        this.$spinner.hide();
+        this.$mask.hide();
+    },
 
-        //setTimeout(function(){
-        //    var audio = new Audio('sound/joshuaempyre_arcade.wav');
-        //    audio.play();
-        //}, 2000);
-        //
-        //setTimeout(function(){
-        //    $('.spinner-container').addClass('loaded');
-        //    $('.spinner-container').fadeTo( "slow", 0 );
-        //    $('.spinner-container').fadeTo( 2000, 0 );;
-        //}, 5000);
-        //
-        //setTimeout(function(){
-        //    $('.spinner-container').css("display", "none");
-        //}, 7000);
+    fadeSpinner: function(){
+        this.$spinner.addClass('loaded');
+        this.fadeMask();
+    },
 
-        $('.spinner-container').css("display", "none");
-    }
+    fadeMask: function(){
+        $('.spinner-container').fadeTo( "slow", 0 );
+        $('.spinner-container').fadeTo( 2000, 0 );
+    },
+
 };

@@ -109,6 +109,10 @@ input[type=number]::-webkit-outer-spin-button {
     margin: 0;
 }
 
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
 /*
  * Hide visually and from screen readers
  */
@@ -317,13 +321,21 @@ input[type=number]::-webkit-outer-spin-button {
     }
 }
 
-.spinner-container{
+.spinner-mask{
     position: absolute;
     width:100%;
     height:100%;
     text-align:center;
     z-index:10000;
     background:#000;
+}
+
+.spinner-container{
+    position: absolute;
+    width:100%;
+    height:100%;
+    text-align:center;
+    z-index:10000;
 }
 
 .spinner{
@@ -452,6 +464,37 @@ input[type=number]::-webkit-outer-spin-button {
     font-weight:normal;
     margin-top:15px;
     margin-bottom:15px;
+}
+
+.login-container{
+    position:relative;
+    z-index:10000;
+    width:500px;
+    margin:auto;
+    top:200px;
+    padding:12px 20px 5px 20px;
+    font-size:20px;
+    -moz-border-radius: 30px;
+    border-radius: 30px;
+    border:3px solid #9933cc;
+}
+
+.login-container .form-group:last-child{
+    margin-bottom:0;
+}
+
+.login-container .form-horizontal .control-label{
+    font-size:20px;
+    font-weight: normal;
+}
+
+.login-container .btn{
+    font-size:20px;
+}
+
+.login-container .btn-submit{
+    padding:5px 15px;
+    width:200px;
 }
 
 /* ==========================================================================

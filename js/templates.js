@@ -26,6 +26,42 @@ QuizGame.Templates.parachuter = `
     </div>
 `;
 
+QuizGame.Templates.login = `
+<form class="form-horizontal">
+    <div class="form-group">
+    <label for="inputEmail" class="col-sm-3 control-label text-success">Email</label>
+    <div class="col-sm-9">
+    <input type="email" class="form-control input-email" id="inputEmail3" placeholder="Email">
+    </div>
+    </div>
+    <div class="form-group">
+    <label for="inputPassword3" class="col-sm-3 control-label text-warning">Password</label>
+    <div class="col-sm-9">
+    <input type="password" class="form-control input-password" id="inputPassword3" placeholder="Password">
+    </div>
+    </div>
+    <div class="form-group">
+    <div class="col-sm-offset-3 col-sm-9">
+    <div class="checkbox">
+    <label>
+    <input type="checkbox" class="input-remember-me"> Remember me
+</label>
+</div>
+</div>
+</div>
+<div class="form-group">
+    <div class="col-sm-12 text-center">
+    <button type="submit" class="btn btn-primary btn-submit">Sign in</button>
+    </div>
+    </div>
+<div class="form-group">
+    <div class="col-sm-12 text-center">
+    <span class="help-block"><a href="#demo" class="text-info">Continue as guest</a></span>
+    </div>
+</div>
+    </form>
+`;
+
 QuizGame.Templates.quiz = `
 <div class="row">
     <div class="col-md-12">
