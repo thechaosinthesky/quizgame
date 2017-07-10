@@ -44,6 +44,7 @@ QuizGame.Particle = {
                         console.log(deviceIndex);
                         that.deviceID = devices[deviceIndex].id;
                         console.log(that.deviceID);
+                        QuizGame.loginView.$el.remove();
                         QuizGame.router.navigate(QuizGame.options.game, {trigger: true});
                     },
                     function(err) {
@@ -53,6 +54,7 @@ QuizGame.Particle = {
                 );
             }
             else{
+                console.log(QuizGame.router);
                 QuizGame.router.navigate("login", {trigger: true});
             }
         }

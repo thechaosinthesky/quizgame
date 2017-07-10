@@ -63,12 +63,38 @@ QuizGame.Templates.login = `
 `;
 
 QuizGame.Templates.quiz = `
-<div class="row">
+<div class="quiz-content">
+    <div class="row">
     <div class="col-md-12">
     <form>
 
     </form>
     </div>
+    </div>
+
+    <br /><
+
+    <div class="row">
+
+    <div class="col-md-12 quiz-buttons">
+
+    <div class="row">
+    <div class="col-md-8 quiz-level-buttons">
+    <button type="button" class="btn btn-info"><span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span> EASIER</button>
+    <button type="button" class="btn btn-warning"><span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span> HARDER</button>
+    </div>
+
+    <div class="col-md-4 text-right">
+    <button type="button" class="btn btn-success btn-reset"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> RESET</button>
+    </div>
+    </div>
+
+    </div>
+
+    </div>
+
+
+
     </div>
 `;
 

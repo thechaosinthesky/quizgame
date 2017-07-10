@@ -5,7 +5,6 @@ var QuizGame = {
         subject: "math",
         questionsLength: 8,
         storagePrefix: "QUIZGAME_",
-        demoMode: false
     },
 
     Particle: {},

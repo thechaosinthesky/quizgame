@@ -466,6 +466,11 @@ input[type="number"] {
     margin-bottom:15px;
 }
 
+.btn {
+    padding: 5px 15px !important;
+    font-size:20px;
+}
+
 .login-container{
     position:relative;
     z-index:10000;
@@ -488,13 +493,24 @@ input[type="number"] {
     font-weight: normal;
 }
 
-.login-container .btn{
-    font-size:20px;
+.login-container .btn-submit{
+    width:200px;
 }
 
-.login-container .btn-submit{
-    padding:5px 15px;
-    width:200px;
+.quiz-buttons{
+    padding:0 40px;
+}
+
+.quiz-buttons div{
+    padding:0;
+}
+
+.quiz-level-buttons{
+    margin-top:30px;
+}
+
+.btn-reset{
+    padding:20px 25px !important;
 }
 
 /* ==========================================================================
@@ -591,6 +607,8 @@ input[type="number"] {
     bottom:0;
     left:0;
     background:#fff;
+
+    /*display:none;*/
 }
 
 #quizgame.game-parachuter .quiz .cloudmask .cloudline{

@@ -230,7 +230,7 @@ QuizGame.Views.Question = Backbone.View.extend({
     answered: function() {
         var that = this;
         if(this.model.get("correct")){
-            if(!QuizGame.options.demoMode){
+            if(!QuizGame.demoMode){
                 QuizGame.Particle.triggerSuccess();
             }
 
@@ -257,7 +257,7 @@ QuizGame.Views.Question = Backbone.View.extend({
             QuizGame.gameView.showSuccess();
         }
         else{
-            if(!QuizGame.options.demoMode){
+            if(!QuizGame.demoMode){
                 QuizGame.Particle.triggerFail();
             }
 
@@ -339,7 +339,6 @@ QuizGame.Views.Login = Backbone.View.extend({
         if(!this.$el.length){
             this.$el = $(".login-container");
             if(!this.$el.length){
-                console.log("NEW");
                 $("body").append('<div class="login-container well"></div>');
                 this.$el = $(".login-container");
             }
@@ -499,6 +498,7 @@ QuizGame.QuizGameRouter = Backbone.Router.extend({
 
     routes: {
         "back": "back",
+        "demo": "demo",
         "login": "login",
         ":game": "init_game",
         "game/:game": "init_game",
@@ -510,12 +510,19 @@ QuizGame.QuizGameRouter = Backbone.Router.extend({
         Backbone.history.start({pushSate: true});
         //this.options = $.extend({}, this.defaultOptions, options);
 
-        //QuizGame.Particle.getDeviceID();
+        if(QuizGame.Particle.getToken()){
+            QuizGame.Particle.getDeviceID();
+        }
+        else{
+            console.log("GOLOGIN");
+            if(!QuizGame.demoMode){
+                this.navigate("login", {trigger: true});
+            }
+        }
 
         // todo, navicate here for demo mode only, otherwise the login should be triggered
-        this.navigate(QuizGame.options.game + "/subject/" + QuizGame.options.subject, {trigger: true});
+        //this.navigate(QuizGame.options.game + "/subject/" + QuizGame.options.subject, {trigger: true});
     },
-
 
     init_game: function (game, subject) {
         console.log("Loading Game: " + game);
@@ -526,14 +533,31 @@ QuizGame.QuizGameRouter = Backbone.Router.extend({
         else{
             console.log("Loading Subject: " + subject);
 
+            this.hidelogin();
+
             QuizGame.gameView = new QuizGame.Views.Game({el: QuizGame.options.el});
         }
     },
 
     login: function () {
-        console.log("LOGING ROUTE");
+        console.log("Login Route");
 
         QuizGame.loginView = new QuizGame.Views.Login({show:true});
+    },
+
+    hidelogin: function () {
+        if(QuizGame.loginView && QuizGame.loginView.$el){
+            QuizGame.loginView.$el.remove();
+        }
+    },
+
+    demo: function () {
+        console.log("GODEMO");
+        QuizGame.demoMode = true;
+
+        this.hidelogin();
+
+        QuizGame.gameView = new QuizGame.Views.Game({el: QuizGame.options.el});
     },
 
 });
