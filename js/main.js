@@ -241,17 +241,37 @@ QuizGame.Views.Question = Backbone.View.extend({
 
             var questionsRight = 2 + this.index;
             var heightOffset = (questionsRight * QuizGame.quizView.questionHeight);
-
-            // Move clouds
-            QuizGame.quizView.$cloudmask.animate({
-                top: QuizGame.quizView.cloudOffset + heightOffset + 'px',
-            }, 1000);
+            var transitionTime = 1000;
 
             // Focus next
             var $nextQuestion = this.$el.next();
             if($nextQuestion.length){
                 $nextQuestion.find('.question-input').focus();
             }
+            else{
+                // Last question,
+                // todo. any cloud and parachute relatied stuff belongs in the game view, not quiz view
+                heightOffset += 100;
+                transitionTime += 5000;
+
+                var windowHeight = $(window).height();
+
+                var $parachuteMan = $('.parachute-man');
+                $parachuteMan.animate({
+                    top: windowHeight + 'px',
+                }, transitionTime);
+
+                setTimeout(function(){
+                    $('.tooltip').animate({
+                        top: windowHeight + 'px',
+                    }, transitionTime);
+                }, 500);
+            }
+
+            // Move clouds
+            QuizGame.quizView.$cloudmask.animate({
+                top: QuizGame.quizView.cloudOffset + heightOffset + 'px',
+            }, transitionTime);
 
             // Show message
             QuizGame.gameView.showSuccess();
@@ -284,6 +304,7 @@ QuizGame.Views.Quiz = Backbone.View.extend({
     template: QuizGame.Templates.quiz,
 
     events: {
+        "click .btn-reset" : "reset"
     },
 
     initialize: function() {
@@ -297,6 +318,8 @@ QuizGame.Views.Quiz = Backbone.View.extend({
         this.questions = new Backbone.Collection([]);
 
         this.addQuestions();
+
+        this.delegateEvents();
     },
 
     addQuestions: function() {
@@ -305,6 +328,10 @@ QuizGame.Views.Quiz = Backbone.View.extend({
             this.questions.add(question);
             new QuizGame.Views.Question({model:question, $parentEl: this.$el.find('form'), index: addQuestion});
         }
+    },
+
+    reset: function() {
+        QuizGame.gameView.reset();
     },
 
 });
@@ -383,6 +410,11 @@ QuizGame.Views.Game = Backbone.View.extend({
         //"click .button.delete": "destroy"
     },
 
+    initialLoadTime: 5000,
+    loadTime: 1000,
+    fadeTime: 2000,
+    initialLoad:true,
+
     sounds:{
         error: ["try_again1.wav", "try_again2.mp3"],
         success: ["yeah1.wav", "yeah2.flac", "bomb1.wav", "bomb2.wav", "bomb3.wav"]
@@ -410,37 +442,61 @@ QuizGame.Views.Game = Backbone.View.extend({
 
         QuizGame.quizView.questionHeight = 95;
 
+        var loadTime = this.loadTime;
+        var fadeTime = this.fadeTime;
+        if(this.initialLoad){
+            loadTime = this.initialLoadTime;
+        }
 
-        //setTimeout(function(){
-        //    var audio = new Audio('sound/joshuaempyre_arcade.wav');
-        //    audio.play();
-        //}, 2000);
-        //
-        //setTimeout(function(){
-        //    QuizGame.$spinner.css("display", "none");
-        //    QuizGame.$mask.addClass('loaded');
-        //    QuizGame.$mask.fadeTo( "slow", 0 );
-        //    QuizGame.$mask.fadeTo( 2000, 0 );
-        //    that.render();
-        //}, 5000);
-        //
-        //setTimeout(function(){
-        //    QuizGame.$mask.css("display", "none");
-        //}, 7000);
-        //
-        //setTimeout(function(){
-        //    QuizGame.quizView.$cloudmask.animate({
-        //        top: QuizGame.quizView.cloudOffset + QuizGame.quizView.questionHeight + 'px',
-        //    }, 800);
-        //}, 5000);
+
+        console.log(this.initialLoad);
+        console.log(loadTime);
+
+        setTimeout(function(){
+            var audio = new Audio('sound/joshuaempyre_arcade.wav');
+            audio.play();
+        }, 2000);
+
+        setTimeout(function(){
+            QuizGame.$spinner.css("display", "none");
+            QuizGame.$mask.addClass('loaded');
+            QuizGame.$mask.fadeTo( "slow", 0 );
+            QuizGame.$mask.fadeTo( fadeTime, 0 );
+            //that.render();
+        }, loadTime);
+
+        setTimeout(function(){
+            QuizGame.$mask.css("display", "none");
+        }, (loadTime + fadeTime));
+
+        setTimeout(function(){
+            QuizGame.quizView.$cloudmask.animate({
+                top: QuizGame.quizView.cloudOffset + QuizGame.quizView.questionHeight + 'px',
+            }, 800);
+        }, loadTime);
 
 
         // Testmode
-        QuizGame.$spinner.css("display", "none");
-        QuizGame.$mask.css("display", "none");
-        QuizGame.quizView.$cloudmask.animate({
-            top: QuizGame.quizView.cloudOffset + QuizGame.quizView.questionHeight + 'px',
-        }, 800);
+        //QuizGame.$spinner.css("display", "none");
+        //QuizGame.$mask.css("display", "none");
+        //QuizGame.quizView.$cloudmask.animate({
+        //    top: QuizGame.quizView.cloudOffset + QuizGame.quizView.questionHeight + 'px',
+        //}, 800);
+
+
+        this.initialLoad = false;
+    },
+
+    reset: function() {
+        QuizGame.quizView.$cloudmask.css("bottom", 0);
+        QuizGame.$mask.removeClass('loaded');
+        QuizGame.$mask.css("display", "block");
+        QuizGame.$mask.css("opacity", 1);
+        //QuizGame.$mask.show();
+        window.scrollTo(0, 0);
+
+        console.log("SHWO");
+        this.render();
     },
 
     showError: function() {
@@ -498,11 +554,12 @@ QuizGame.QuizGameRouter = Backbone.Router.extend({
 
     routes: {
         "back": "back",
-        "demo": "demo",
         "login": "login",
-        ":game": "init_game",
         "game/:game": "init_game",
-        ":game/subject/:subject": "init_game",
+        "game/:game/subject/:subject": "init_game",
+        "demo": "demo",
+        "demo/:game": "demo",
+        "demo/:game/subject/:subject": "demo",
         "level/:level": "load_level",
     },
 
@@ -514,29 +571,28 @@ QuizGame.QuizGameRouter = Backbone.Router.extend({
             QuizGame.Particle.getDeviceID();
         }
         else{
-            console.log("GOLOGIN");
             if(!QuizGame.demoMode){
                 this.navigate("login", {trigger: true});
             }
         }
-
-        // todo, navicate here for demo mode only, otherwise the login should be triggered
-        //this.navigate(QuizGame.options.game + "/subject/" + QuizGame.options.subject, {trigger: true});
     },
 
-    init_game: function (game, subject) {
+    init_game: function (game, subject = QuizGame.options.subject) {
         console.log("Loading Game: " + game);
 
-        if(!subject){
-            this.navigate(game + "/subject/" + QuizGame.options.subject, {trigger: true});
+        if(!game){
+            this.navigate("game" + QuizGame.options.game + "/subject/" + QuizGame.options.subject, {trigger: true});
         }
         else{
             console.log("Loading Subject: " + subject);
 
-            this.hidelogin();
-
-            QuizGame.gameView = new QuizGame.Views.Game({el: QuizGame.options.el});
+            this.load_game(game, subject);
         }
+    },
+
+    load_game: function (game, subject) {
+        this.hidelogin();
+        QuizGame.gameView = new QuizGame.Views.Game({el: QuizGame.options.el});
     },
 
     login: function () {
@@ -551,13 +607,16 @@ QuizGame.QuizGameRouter = Backbone.Router.extend({
         }
     },
 
-    demo: function () {
+    demo: function (game, subject = QuizGame.options.subject) {
         console.log("GODEMO");
         QuizGame.demoMode = true;
 
-        this.hidelogin();
+        if(!game){
+            game = QuizGame.options.game;
+            //this.navigate("demo/" + QuizGame.options.game + "/subject/" + QuizGame.options.subject, {trigger: true});
+        }
 
-        QuizGame.gameView = new QuizGame.Views.Game({el: QuizGame.options.el});
+        this.load_game(game, subject);
     },
 
 });
