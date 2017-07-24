@@ -27,12 +27,62 @@ QuizGame.Utils = {
 };
 
 QuizGame.Storage = {
+    get: function(name) {
+        if(QuizGame.demoMode){
+            //return chrome.storage.local.get(QuizGame.storagePrefix + name);
+            try {
+                return localStorage.getItem(QuizGame.storagePrefix + name);
+            }
+            catch(err) {
+                console.log(err);
+                console.log("RETURNING NUL");
+                return null;
+            }
+        }
+        else{
+            return QuizGame.Utils.readCookie(name);
+        }
+    },
+
+    set: function(name, value) {
+        if(QuizGame.demoMode){
+            //return chrome.storage.local.set(QuizGame.storagePrefix + name, value);
+            try {
+                localStorage.setItem(QuizGame.storagePrefix + name, value);
+                return value;
+            }
+            catch(err) {
+                console.log(err);
+                return value;
+            }
+        }
+        else{
+            return QuizGame.Utils.createCookie(name, value, 7);
+        }
+    },
+
     store: function(name,value) {
+        try {
+            localStorage.setItem(QuizGame.storagePrefix + name, value);
+            return true;
+        }
+        catch(err) {
+            console.log(err);
+            console.log("Cant store it");
+            return null;
+        }
         localStorage.setItem(QuizGame.storagePrefix + name, value);
     },
 
     read: function(name) {
-        return localStorage.getItem(QuizGame.storagePrefix + name);
+        try {
+            return localStorage.getItem(QuizGame.storagePrefix + name);
+        }
+        catch(err) {
+            console.log(err);
+            console.log("RETURNING NUL");
+            return null;
+        }
     },
 
     remove: function(name) {

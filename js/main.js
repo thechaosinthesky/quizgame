@@ -70,7 +70,6 @@ QuizGame.Models.Question = Backbone.Model.extend({
 
     generateNumbers: function(level) {
         var numbers = [];
-        var numberLevel = 1;
 
         switch(level) {
             case 4:
@@ -202,19 +201,31 @@ QuizGame.Views.Question = Backbone.View.extend({
         obj.index = this.index;
         obj.classes = this.classes[this.index % this.classes.length];
 
+        if(this.model.get("correct")){
+            obj.classes += " question-active";
+        }
+
         if(this.$parentEl.find(id).length){
             this.$parentEl.find(id).replaceWith(template(obj));
             this.$el = this.$parentEl.find(id);
+            setTimeout(function(){
+                that.$el.removeClass("question-active");
+            },200);
         }
         else{
             this.$parentEl.append(template(obj));
             this.$el = this.$parentEl.find(id);
             this.$input = this.$el.find('.question-input');
+
+            // First Question
             if(this.index == 0){
+                this.$el.addClass('question-active');
                 this.$input.focus();
             }
             this.delegateEvents();
         }
+
+
     },
 
     validate: function(e) {
@@ -231,7 +242,12 @@ QuizGame.Views.Question = Backbone.View.extend({
         var that = this;
         if(this.model.get("correct")){
             if(!QuizGame.demoMode){
-                QuizGame.Particle.triggerSuccess();
+                if(this.index < (QuizGame.options.questionsLength - 1)){
+                    QuizGame.Particle.call("timedPulse", "233");
+                }
+                else{
+                    QuizGame.Particle.call("timedPulse", "350");
+                }
             }
 
             this.$el.removeClass('answer-incorrect');
@@ -247,6 +263,7 @@ QuizGame.Views.Question = Backbone.View.extend({
             var $nextQuestion = this.$el.next();
             if($nextQuestion.length){
                 $nextQuestion.find('.question-input').focus();
+                $nextQuestion.addClass('question-active');
             }
             else{
                 // Last question,
@@ -301,13 +318,23 @@ QuizGame.Views.Question = Backbone.View.extend({
 
 QuizGame.Views.Quiz = Backbone.View.extend({
 
+    level:1,
+    maxLevel:4,
+
     template: QuizGame.Templates.quiz,
 
     events: {
-        "click .btn-reset" : "reset"
+        "click .btn-reset" : "reset",
+        "click .btn-level-up" : "levelUp",
+        "click .btn-level-down" : "levelDown"
     },
 
     initialize: function() {
+        this.level = QuizGame.options.level;
+        if(this.level >= this.maxLevel){
+            this.level = this.maxLevel;
+        }
+
         this.render();
     },
 
@@ -324,13 +351,43 @@ QuizGame.Views.Quiz = Backbone.View.extend({
 
     addQuestions: function() {
         for (var addQuestion = 0; addQuestion < QuizGame.options.questionsLength; addQuestion++) {
-            var question = new QuizGame.Models.Question();
+            var question = new QuizGame.Models.Question({level:QuizGame.options.level});
             this.questions.add(question);
             new QuizGame.Views.Question({model:question, $parentEl: this.$el.find('form'), index: addQuestion});
         }
     },
 
     reset: function() {
+        QuizGame.gameView.reset();
+    },
+
+    levelUp: function() {
+        console.log("GETLEVEL");
+        var thLevel = QuizGame.getLevel();
+        console.log("GOtTTHELEVEL");
+        console.log(thLevel);
+        console.log(thLevel + 1);
+
+        var level = QuizGame.getLevel() + 1;
+
+        console.log("NEWLEVEL " + level);
+        if(level >= this.maxLevel){
+            level = this.maxLevel;
+        }
+        QuizGame.options.level = level;
+        console.log("LEVELSET");
+        QuizGame.setLevel(level);
+        console.log(QuizGame.options.level );
+        QuizGame.gameView.reset();
+    },
+
+    levelDown: function() {
+        var level = QuizGame.getLevel() - 1;
+        if(level < 1){
+            level = 1;
+        }
+        QuizGame.options.level = level;
+        QuizGame.setLevel(level);
         QuizGame.gameView.reset();
     },
 
@@ -358,6 +415,7 @@ QuizGame.Views.Login = Backbone.View.extend({
 
     render: function() {
         QuizGame.$spinner.hide();
+        QuizGame.$mask.show();
 
         var template = _.template(this.template, {});
 
@@ -368,6 +426,7 @@ QuizGame.Views.Login = Backbone.View.extend({
             if(!this.$el.length){
                 $("body").append('<div class="login-container well"></div>');
                 this.$el = $(".login-container");
+                QuizGame.$mask.show();
             }
         }
 
@@ -390,10 +449,10 @@ QuizGame.Views.Login = Backbone.View.extend({
 
                 // Store thie index of the device,
                 // todo, add a ui to select the device from a dropdown to store the device index in the cookie
-                QuizGame.Utils.createCookie('d', '5', 7);
+                //QuizGame.Utils.createCookie('d', '5', 7);
                 //QuizGame.Storage.store('d', '5');
 
-                QuizGame.getDeviceID();
+                QuizGame.Particle.getDeviceID();
 
             }, function(err) {
                 console.error(err);
@@ -448,40 +507,50 @@ QuizGame.Views.Game = Backbone.View.extend({
             loadTime = this.initialLoadTime;
         }
 
+        console.log("ISTESTMODE");
+        console.log(QuizGame.testMode);
 
-        console.log(this.initialLoad);
-        console.log(loadTime);
+        if(!QuizGame.testMode) {
+            setTimeout(function () {
 
-        setTimeout(function(){
-            var audio = new Audio('sound/joshuaempyre_arcade.wav');
-            audio.play();
-        }, 2000);
 
-        setTimeout(function(){
+                setInterval(function() {
+                    var audio = new Audio('sound/joshuaempyre_arcade.wav');
+                    audio.currentTime = 0;
+                    audio.play();
+                }, 34100);
+
+                var first = new Audio('sound/joshuaempyre_arcade.wav');
+                first.play();
+            }, 2000);
+
+            setTimeout(function () {
+                QuizGame.$spinner.css("display", "none");
+                QuizGame.$mask.addClass('loaded');
+                QuizGame.$mask.fadeTo("slow", 0);
+                QuizGame.$mask.fadeTo(fadeTime, 0);
+                //that.render();
+            }, loadTime);
+
+            setTimeout(function () {
+                QuizGame.$mask.css("display", "none");
+            }, (loadTime + fadeTime));
+
+            setTimeout(function () {
+                QuizGame.quizView.$cloudmask.animate({
+                    top: QuizGame.quizView.cloudOffset + QuizGame.quizView.questionHeight + 'px',
+                }, 800);
+            }, loadTime);
+        }
+        else{
+            // Testmode
             QuizGame.$spinner.css("display", "none");
-            QuizGame.$mask.addClass('loaded');
-            QuizGame.$mask.fadeTo( "slow", 0 );
-            QuizGame.$mask.fadeTo( fadeTime, 0 );
-            //that.render();
-        }, loadTime);
-
-        setTimeout(function(){
             QuizGame.$mask.css("display", "none");
-        }, (loadTime + fadeTime));
-
-        setTimeout(function(){
             QuizGame.quizView.$cloudmask.animate({
                 top: QuizGame.quizView.cloudOffset + QuizGame.quizView.questionHeight + 'px',
             }, 800);
-        }, loadTime);
-
-
-        // Testmode
-        //QuizGame.$spinner.css("display", "none");
-        //QuizGame.$mask.css("display", "none");
-        //QuizGame.quizView.$cloudmask.animate({
-        //    top: QuizGame.quizView.cloudOffset + QuizGame.quizView.questionHeight + 'px',
-        //}, 800);
+            $(".cloudmask").css("display", "none");
+        }
 
 
         this.initialLoad = false;
@@ -491,11 +560,11 @@ QuizGame.Views.Game = Backbone.View.extend({
         QuizGame.quizView.$cloudmask.css("bottom", 0);
         QuizGame.$mask.removeClass('loaded');
         QuizGame.$mask.css("display", "block");
-        QuizGame.$mask.css("opacity", 1);
-        //QuizGame.$mask.show();
+        //QuizGame.$mask.css("opacity", 1);
+        QuizGame.$mask.show();
         window.scrollTo(0, 0);
 
-        console.log("SHWO");
+        console.log("SHOW");
         this.render();
     },
 
@@ -615,6 +684,8 @@ QuizGame.QuizGameRouter = Backbone.Router.extend({
             game = QuizGame.options.game;
             //this.navigate("demo/" + QuizGame.options.game + "/subject/" + QuizGame.options.subject, {trigger: true});
         }
+
+        QuizGame.$spinner.show();
 
         this.load_game(game, subject);
     },

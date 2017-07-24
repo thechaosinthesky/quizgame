@@ -96,7 +96,7 @@ QuizGame.Templates.quiz = `
 `;
 
 QuizGame.Templates.question = `
-<div class="form-group row <%= classes %>" id="question<%= index %>" data-index="<%= index %>">
+<div class="form-group row question <%= classes %>" id="question<%= index %>" data-index="<%= index %>">
     <% if (correct) { %>
         <label class="col-sm-12 col-form-label text-center"><%= expression %></label>
     <% }else{ %>

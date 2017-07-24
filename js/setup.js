@@ -3,10 +3,12 @@ var QuizGame = {
         el: "#quizgame",
         game: "parachuter",
         subject: "math",
+        level:1,
         questionsLength: 8,
         storagePrefix: "QUIZGAME_",
     },
 
+    testMode:false,
     Particle: {},
     Templates: {},
     Models: {},
@@ -42,6 +44,35 @@ var QuizGame = {
     fadeMask: function(){
         $('.spinner-container').fadeTo( "slow", 0 );
         $('.spinner-container').fadeTo( 2000, 0 );
+    },
+
+    getLevel: function(){
+        var level = this.options.level;
+        var levels = QuizGame.Storage.read("levels");
+        console.log(levels);
+        if(levels){
+            var subjectLevel = levels[this.options.subject];
+            if(subjectLevel){
+                level = parseInt(subjectLevel);
+            }
+        }
+
+        console.log("RETURNING FOR get level " + level);
+
+        this.options.level = level;
+        return level;
+    },
+
+    setLevel: function(level){
+        var levels = QuizGame.Storage.read("levels");
+        if(!levels){
+            levels = {};
+        }
+        levels[this.options.subject] = level;
+        QuizGame.Storage.store("levels", levels);
+
+        this.options.level = level;
+        return level
     },
 
 };
